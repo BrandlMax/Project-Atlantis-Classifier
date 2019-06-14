@@ -20,6 +20,8 @@ fig = plot.figure(1)
 plot.title('Spectrogram')
 plot.xlabel('Sample')
 plot.ylabel('Amplitude')
+plot.subplots_adjust(left=0.1, right=0.9, bottom=0.1,
+                     top=0.9, wspace=0.8, hspace=0.8)
 
 fig.add_subplot(311)
 im = plot.specgram(
