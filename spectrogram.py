@@ -7,8 +7,9 @@ import csv
 data = []
 
 with open("CSVData/noFinger.csv") as csvfile:
-    reader = csv.reader(csvfile, quoting=csv.QUOTE_NONNUMERIC) # change contents to floats
-    for row in reader: # each row is a list
+    # change contents to floats
+    reader = csv.reader(csvfile, quoting=csv.QUOTE_NONNUMERIC)
+    for row in reader:  # each row is a list
         data.append(row)
 
 # remove header
