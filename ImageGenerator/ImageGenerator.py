@@ -29,7 +29,7 @@ class ImageGenerator:
         # Generate Images
         if type == 'heatmap':
             heatmap = Heatmap(0)
-            heatmap.createImages(labels)
+            heatmap.createImages(labels, 100)
             # Create Heatmap
         elif type == 'spectrogram':
             pass
