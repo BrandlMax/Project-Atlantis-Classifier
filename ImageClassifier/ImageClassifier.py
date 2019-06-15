@@ -17,7 +17,7 @@ from random import randint
 
 
 class IMAGECLASSIFIER:
-    def __init__(self, trainingPath='./Data/training', validationPath='./Data/validation'):
+    def __init__(self, trainingPath='./Data/images/training', validationPath='./Data/images/validation'):
         self.labels = []
         self.images = []
 

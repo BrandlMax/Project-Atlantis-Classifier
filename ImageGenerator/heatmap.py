@@ -1,12 +1,17 @@
 # import the libraries
 from ImageGenerator.Modules import DATA
 
+import time
+from Serial2Plot.MFramework import Serial
+import matplotlib.animation as animation
 import matplotlib.pyplot as plot
 import numpy as np
 
 class Heatmap:
-    def __init__(self, parameter_list):
-        self.dataLoader = DATA.DATA()        
+    def __init__(self, Port, Baud, BufferLength=1, Divider='0'):
+        self.dataLoader = DATA.DATA()  
+        self.BufferLength = BufferLength
+        self.SERIAL = Serial.CONNECTION(Port, Baud, BufferLength, Divider)
 
     def createImages(self, labels, packageSize):
         t_data = []
@@ -34,6 +39,31 @@ class Heatmap:
         print('Saving images for validation')
         print(len(v_data))
         self.drawPlot(labels, v_data, 'validation')
+
+    def calcPlot(self):
+        d = []
+        if(self.SERIAL.ready):
+            self.SERIAL.READ()            
+            for i in range(len(self.SERIAL.doneBUFFER)):
+                d.append(int(self.SERIAL.doneBUFFER[i]))
+
+            x = np.linspace(0,160, 160)
+            y = np.array(d)
+            fig, (ax) = plot.subplots(nrows=1, sharex=True)
+
+            extent = [x[0]-(x[1]-x[0])/2., x[-1]+(x[1]-x[0])/2.,0,1]
+            ax.imshow(y[np.newaxis,:], cmap="plasma", aspect="auto", extent=extent)
+            ax.set_yticks([])
+            ax.set_xlim(extent[0], extent[1])
+
+            plot.tight_layout()
+
+    def renderPlot(self):
+        while True:
+            self.calcPlot()
+            plot.show()
+            time.sleep(1)
+            plot.close()
 
     def drawPlot(self, labels, data, set): 
         i = 0
