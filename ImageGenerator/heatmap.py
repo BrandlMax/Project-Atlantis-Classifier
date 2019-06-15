@@ -42,7 +42,7 @@ ax.set_yticks([])
 ax.set_xlim(extent[0], extent[1])
 
 # Second
-y = np.array(d4)
+y = np.array(d2)
 
 ax2.imshow(y[np.newaxis,:], cmap="plasma", aspect="auto", extent=extent)
 ax2.set_yticks([])

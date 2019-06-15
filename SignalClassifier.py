@@ -29,3 +29,18 @@
 # Get Serial Stream
 # Ploting()
 # ImageClassifier_Predict(ImageAsBase64) -> Label + Probability
+
+from ImageGenerator import ImageGenerator as IG
+
+def train():
+    image.prepareData('heatmap')
+
+def main():
+    print('Signal Classifier')    
+
+    # Create Image Generator
+    global
+    imageGenerator = IG.ImageGenerator(0)
+
+if __name__ == '__main__':
+    main()
