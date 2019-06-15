@@ -4,7 +4,7 @@ import asyncio
 import tensorflow as tf
 
 from keras.backend import clear_session
-from neuralnetwork.ML import MobileNet, ImageConverter, ImageClassifierModel
+from ImageClassifier.neuralnetwork.ML import MobileNet, ImageConverter, ImageClassifierModel
 
 
 # GLOBALS
@@ -18,6 +18,7 @@ IMAGE_SIZE = 224
 graph = []
 
 # SETUP
+
 
 def Setup(ClassesAmount: int):
 
@@ -33,10 +34,9 @@ def Setup(ClassesAmount: int):
     CLASSESAMOUNT = ClassesAmount
 
 
-
 # ADD
 
-def Add(label_id: int, img_path):    
+def Add(label_id: int, img_path):
     global IMAGESasFEATURES
     global LABELS
 
@@ -58,11 +58,11 @@ def Add(label_id: int, img_path):
         IMAGESasFEATURES = np.array(featurePredictionResult)
         LABELS = np.array([labelArray])
     else:
-        IMAGESasFEATURES = np.append(IMAGESasFEATURES, featurePredictionResult, axis=0)
+        IMAGESasFEATURES = np.append(
+            IMAGESasFEATURES, featurePredictionResult, axis=0)
         LABELS = np.append(LABELS, [labelArray], axis=0)
 
     print('Image Added ({})'.format(label_id))
-
 
 
 # TRAIN
@@ -82,6 +82,7 @@ def Predict(img_path):
     return np.around(RESULT)
 
 # same as Predict but with image instead of path
+
 
 async def PredictFrame(frame):
     global graph
