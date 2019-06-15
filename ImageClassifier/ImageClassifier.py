@@ -1,62 +1,98 @@
+import os.path
+import os
+import numpy as np
+from ImageClassifier.neuralnetwork import nn
 from PIL import Image
 from random import randint
-from neuralnetwork import nn
-
-import numpy as np
-import os
-import os.path
-
-labels = []
-images = []
-
-sizeDataset = 100
-
-possibleLabels = ['Cat', 'Dog']
-randTest = randint(0, sizeDataset)
 
 
-def LoadImages():
-    for label in possibleLabels:
-        path = 'data/' + label + '/'
-        filename = randint(0, 1000)
-        for filename in range(sizeDataset):
-            images.append(os.path.join(path, str(filename) + '.jpg'))
-            labels.append(label)
-    print("Images Count: " + str(len(images)))
-    print("Labels Count: " + str(len(labels)))
-    print("Image file: " + images[randTest])
-    print("Image Label: " + labels[randTest])
+# Classifier
+# trainModel()
+# Nimmt die Daten und trainiert das netzwerk
+# ImageClassifier(labels[]) -> returns Loss
+
+# validateModel()
+# nimmt die Testdaten und predicted
+# returns accuracy
 
 
-def Train():
-    nn.Setup(len(possibleLabels))
-    for image in images:
-        l = image.split('/')
-        l = possibleLabels.index(l[1])
-        nn.Add(l, image)
-    nn.Train()
+class IMAGECLASSIFIER:
+    def __init__(self, trainingPath='./Data/training', validationPath='./Data/validation'):
+        self.labels = []
+        self.images = []
 
+        self.val_labels = []
+        self.val_images = []
 
-def Predict():
-    sizeTestdata = 100
-    result = []
-    print('Cat Test (' + str(sizeTestdata) + ')')
-    for i in range(sizeTestdata):
-        r = randint(2000, 3000)
-        pre = nn.Predict('data/Cat/' + str(r) + '.jpg')
-        correct = pre[0][0]
-        result.append(correct)
-    print('Acc: ' + str(sum(result) / len(result)))
-    result = []
-    print('Dog Test (' + str(sizeTestdata) + ')')
-    for i in range(sizeTestdata):
-        r = randint(2000, 3000)
-        pre = nn.Predict('data/Dog/' + str(r) + '.jpg')
-        correct = pre[0][1]
-        result.append(correct)
-    print('Acc: ' + str(sum(result) / len(result)))
+        self.possibleLabels = []
 
+        # LOAD ALL TRAININGSDATA
+        self.Get_Datasets(trainingPath, validationPath)
 
-LoadImages()
-Train()
-Predict()
+    def trainModel(self):
+        print("Train Model")
+        self.Train()
+
+    def validateModel(self):
+        print("Validate Model")
+        resultList = []
+        for idx, valImage in enumerate(self.val_images):
+            result = self.Predict(valImage)
+            # print("Image: ", valImage)
+            # print("ShouldBe: ", self.val_labels[idx])
+            # print("Is: ", result)
+            if(result == self.val_labels[idx]):
+                resultList.append(1)
+            else:
+                resultList.append(0)
+        acc = str(sum(resultList) / len(resultList))
+        print("Accuracy: ", acc)
+
+    def Train(self):
+        nn.Setup(len(self.possibleLabels))
+        for image in self.images:
+            l = image.split('/')
+            print("l1", l)
+            l = self.possibleLabels.index(l[-2])
+            print("addLabel", l)
+            print("addImage", image)
+            nn.Add(l, image)
+        nn.Train()
+
+    def Predict(self, path):
+        pre = nn.Predict(path)
+        labelIndex = np.where(pre[0] == 1.0)
+        predictionResult = self.possibleLabels[labelIndex[0][0]]
+        return predictionResult
+        # print("Prediction:", predictionResult)
+
+    def Get_Datasets(self, trainingPath, validationPath):
+        trainingFolder = os.walk(trainingPath)
+        validationFolder = os.walk(validationPath)
+        self.possibleLabels = next(trainingFolder)[1]
+
+        # TRAINING DATA
+        for idx, labels in enumerate(trainingFolder):
+            for image in labels[2]:
+                if(image != ".DS_Store"):
+                    pathLabelPart = "/" + self.possibleLabels[idx] + "/"
+                    self.images.append(os.path.join(
+                        trainingPath + pathLabelPart, image))
+                    self.labels.append(self.possibleLabels[idx])
+
+        # VALIDATION DATA
+        for idx, labels in enumerate(validationFolder):
+            # Some how he counts the validation folder. so we have to ignore the first entry
+            if(idx != 0):
+                idx = idx - 1
+                for image in labels[2]:
+                    if(image != ".DS_Store"):
+                        pathLabelPart = "/" + self.possibleLabels[idx] + "/"
+                        self.val_images.append(os.path.join(
+                            validationPath + pathLabelPart, image))
+                        self.val_labels.append(self.possibleLabels[idx])
+
+        print("IMAGES LOADED", self.images)
+        print("LABELS LOADED", self.labels)
+        print("VAL IMAGES LOADED", self.val_images)
+        print("VAL LABELS LOADED", self.val_labels)
