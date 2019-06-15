@@ -5,7 +5,7 @@ class DATA:
     def __init__(self):
         print("DATALOADER")
 
-    def load(self, path, amount=100):
+    def load(self, path, amount=5, maxSize=1000):
         data = []
 
         with open(path) as csvfile:
@@ -17,5 +17,18 @@ class DATA:
 
         # remove header
         data.pop(0)
-        data = data[:amount]
-        return data
+        # data = data[:amount]
+
+        packages = []
+
+        iterations = len(data) / amount
+        if iterations >= maxSize:
+            iterations = maxSize
+
+        for pI in range(0, int(iterations)):
+            d = []
+            for i in range(0, len(data)):
+                d.append(data[i])
+            packages.append(d)
+
+        return packages
