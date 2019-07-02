@@ -53,7 +53,7 @@ class IMAGECLASSIFIER:
     def predictFrame(self, frame):
         # CROP FRAME
         # left, up, right, bottom
-        border = (0, 0, 0, 30)
+        border = (70, 0, 0, 70)
 
         # CROP
         frame = ImageOps.crop(frame, border)       

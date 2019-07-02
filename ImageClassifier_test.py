@@ -26,6 +26,7 @@ IC = ImageClassifier.IMAGECLASSIFIER()
 ID = 0
 NoFingerID = 0 
 OneFingerID = 0
+TwoFingerID = 0
 
 def addNoFinger(e):
     global NoFingerID
@@ -36,6 +37,11 @@ def addOneFinger(e):
     global OneFingerID
     OneFingerID += 1 
     saveImage('OneFinger', OneFingerID)
+    
+def addTwoFinger(e):
+    global TwoFingerID
+    TwoFingerID += 1 
+    saveImage('TwoFinger', TwoFingerID)
 
 def start(e):
     global state
@@ -52,7 +58,11 @@ axEnd = plt.axes([0.22, 0.01, 0.2, 0.05])
 endButton = Button(axEnd, 'One Finger')
 endButton.on_clicked(addOneFinger)
 
-axF = plt.axes([0.44, 0.01, 0.2, 0.05])
+axT = plt.axes([0.44, 0.01, 0.2, 0.05])
+tButton = Button(axT, 'Two Fingers')
+tButton.on_clicked(addTwoFinger)
+
+axF = plt.axes([0.66, 0.01, 0.2, 0.05])
 fButton = Button(axF, 'Start')
 fButton.on_clicked(start)
 
@@ -74,13 +84,13 @@ def animate(i):
         SERIAL.READ()
 
         y = np.array(SERIAL.doneBUFFER.copy())
-        x = np.linspace(0, 1, 160)     
+        x = np.linspace(0, 160, 160)     
 
         extent = [x[0]-(x[1]-x[0])/2., x[-1]+(x[1]-x[0])/2.,0,1]       
 
         ax.cla()
-        im = ax.imshow(y[np.newaxis,:], cmap="inferno", aspect="auto", extent=extent)
-        
+        im = ax.imshow(y[np.newaxis,:], cmap="inferno", aspect="auto", extent=extent)        
+        ax.set_title("frame {}".format(i))
         if(state == 'takeImage'):
 
             global ID              
@@ -101,13 +111,14 @@ def animate(i):
 
             # SET BORDER THAT GETS CROPPED
             # left, up, right, bottom
-            border = (0, 0, 0, 30)
+            border = (70, 0, 0, 70)
 
             # CROP
             image = ImageOps.crop(image, border)
 
             # SAVE IMAGE
             image.save(b, format='jpeg')
+            # image.save('./RTData/image.jpg', format='jpeg')
 
             buffer_.close()
 
