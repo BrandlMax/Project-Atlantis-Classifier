@@ -46,7 +46,7 @@ class CONNECTION:
                     if(len(self.wipBUFFER) <= self.BufferLength and value):
                         self.wipBUFFER.append(value)
 
-                # print("Done Buffer", self.doneBUFFER)
+            print("Done Buffer", self.doneBUFFER)
 
     def toInt(self, value):
         # To Prevent Error

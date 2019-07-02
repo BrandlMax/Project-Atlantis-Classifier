@@ -28,7 +28,7 @@ class ImageGenerator:
 
         # Generate Images
         if type == 'heatmap':
-            heatmap = Heatmap('COM7', 115200, 160, '999')
+            heatmap = Heatmap('COM3', 115200, 160, '999')
             # heatmap.renderPlot()
             heatmap.createImages(labels, 5)
             # Create Heatmap
