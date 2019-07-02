@@ -21,13 +21,13 @@ class IMAGECLASSIFIER:
         self.labels = []
         self.images = []
 
+        self.trainingPath = trainingPath
+        self.validationPath = validationPath
+
         self.val_labels = []
         self.val_images = []
 
         self.possibleLabels = []
-
-        # LOAD ALL TRAININGSDATA
-        self.Get_Datasets(trainingPath, validationPath)
 
     def trainModel(self):
         print("Train Model")
@@ -48,7 +48,15 @@ class IMAGECLASSIFIER:
         acc = str(sum(resultList) / len(resultList))
         print("Accuracy: ", acc)
 
-    def Train(self):
+    def predictFrame(self, frame):
+        print("Predicting")
+        pre = nn.PredictFrame(frame)
+        print("Prediction: " + str(pre))
+
+    def Train(self):        
+        # LOAD ALL TRAININGSDATA
+        self.Get_Datasets(self.trainingPath, self.validationPath)
+
         nn.Setup(len(self.possibleLabels))
         for image in self.images:
             l = image.split('/')

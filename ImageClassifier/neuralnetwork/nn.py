@@ -84,10 +84,9 @@ def Predict(img_path):
 # same as Predict but with image instead of path
 
 
-async def PredictFrame(frame):
-    global graph
-    with graph.as_default():
-        img = ImageConverter.convertFrame(frame)
-        Features = FEATUREMODEL.predict(img)
-        RESULT = MODEL.predict(Features)
-        return np.around(RESULT)
+def PredictFrame(frame):    
+    print("nn")
+    img = ImageConverter.convertFrame(frame)
+    Features = FEATUREMODEL.predict(img)
+    RESULT = MODEL.predict(Features)
+    return np.around(RESULT)

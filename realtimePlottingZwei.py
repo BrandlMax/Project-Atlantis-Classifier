@@ -16,23 +16,20 @@ SERIAL = Serial.CONNECTION(Port, Baud, BufferLength, Divider)
 # PLOT
 fig, ax = plt.subplots()
 
-def init():
-    line.set_data([], [])
-    return line,
-
 def animate(i):
    if (SERIAL.ready):
         SERIAL.READ()
 
         y = np.array(SERIAL.doneBUFFER.copy())
-        x = np.linspace(0, 160, 160)     
+        x = np.linspace(0, 1, 160)     
 
-        extent = [x[0]-(x[1]-x[0])/2., x[-1]+(x[1]-x[0])/2.,0,1]
-        
+        extent = [x[0]-(x[1]-x[0])/2., x[-1]+(x[1]-x[0])/2.,0,1]       
+
         ax.cla()
-        ax.imshow(y[np.newaxis,:], cmap="plasma", aspect="auto", extent=extent)
+        im = ax.imshow(y[np.newaxis,:], cmap="inferno", aspect="auto", extent=extent)
         ax.set_title("frame {}".format(i))
         plt.pause(0.001)
+        return im
        
 anim = animation.FuncAnimation(fig, animate, interval = 1)
 
