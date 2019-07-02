@@ -1,10 +1,11 @@
 # SERIAL
 # Inspired from https://www.thepoorengineer.com/en/arduino-python-plot/
 import serial
+import time
 
 
 class CONNECTION:
-    def __init__(self, Port, Baud, BufferLength='1', Divider='0'):
+    def __init__(self, Port, Baud, BufferLength='1', Divider='0', startTime=0):
         self.PORT = Port
         self.BAUD = Baud
         self.ready = False
@@ -14,6 +15,8 @@ class CONNECTION:
         self.wipBUFFER = []
         self.doneBUFFER = []
         self.Divider = Divider
+
+        self.startTime = startTime
 
         print('Trying to connect to: ' + str(self.PORT) +
               ' at ' + str(self.BAUD) + ' BAUD.')
@@ -29,6 +32,7 @@ class CONNECTION:
                   ' at ' + str(self.BAUD) + ' BAUD.')
 
     def READ(self):
+        # sprint("--- %s START READ ---" % (time.time() - self.startTime))
         if(self.isReading != True):
             self.isReading = True
             while(self.isReading):
@@ -40,6 +44,7 @@ class CONNECTION:
                     else:
                         self.doneBUFFER = self.wipBUFFER.copy()
                     self.wipBUFFER = []
+                    # print("--- %s END READ ---" %(time.time() - self.startTime))
                     self.isReading = False
                 else:
                     value = self.toInt(self.LINE)

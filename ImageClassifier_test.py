@@ -1,3 +1,4 @@
+import threading
 from ImageClassifier import ImageClassifier
 from Serial2Plot.MFramework import Serial
 import numpy as np
@@ -9,13 +10,18 @@ from Serial2Plot.MFramework import CSV
 from matplotlib.widgets import Button
 from PIL import ImageOps
 
+import time
+start_time = time.time()
+
+
 # SERIAL DATA
-Port = "COM3"
+# Port = "COM3"
+Port = '/dev/cu.usbmodem14401'
 Baud = 115200
 BufferLength = 160
 Divider = "999"
 
-SERIAL = Serial.CONNECTION(Port, Baud, BufferLength, Divider)
+SERIAL = Serial.CONNECTION(Port, Baud, BufferLength, Divider, start_time)
 
 # PLOT
 fig, ax = plt.subplots()
@@ -24,29 +30,35 @@ IC = ImageClassifier.IMAGECLASSIFIER()
 
 # Dirty af
 ID = 0
-NoFingerID = 0 
+NoFingerID = 0
 OneFingerID = 0
 TwoFingerID = 0
+
 
 def addNoFinger(e):
     global NoFingerID
     NoFingerID += 1
     saveImage('noFinger', NoFingerID)
 
+
 def addOneFinger(e):
     global OneFingerID
-    OneFingerID += 1 
+    OneFingerID += 1
     saveImage('OneFinger', OneFingerID)
-    
+
+
 def addTwoFinger(e):
     global TwoFingerID
-    TwoFingerID += 1 
+    TwoFingerID += 1
     saveImage('TwoFinger', TwoFingerID)
+
 
 def start(e):
     global state
     IC.trainModel()
+    IC.validateModel()
     state = 'predict'
+
 
 # GUI
 # L, B, W, H
@@ -69,6 +81,7 @@ fButton.on_clicked(start)
 state = 'nothing'
 label = 'noLabel'
 
+
 def saveImage(l, iid):
     print('saveImage')
     global label
@@ -78,31 +91,47 @@ def saveImage(l, iid):
     state = 'takeImage'
     ID = iid
 
-def animate(i):    
+
+def animate(i):
     global state
     if (SERIAL.ready):
-        SERIAL.READ()
+        curTime = time.time() - start_time
+        # print("--- %s START ANIMATE ---" % (curTime))
+        # SERIAL.READ()
 
-        y = np.array(SERIAL.doneBUFFER.copy())
-        x = np.linspace(0, 160, 160)     
+        dataPartArray = []
 
-        extent = [x[0]-(x[1]-x[0])/2., x[-1]+(x[1]-x[0])/2.,0,1]       
+        while(len(dataPartArray) < 50):
+            dataPart = SERIAL.doneBUFFER.copy()
+            dataPart = dataPart[60:]
+            dataPart = dataPart[:40]
+            dataPartArray.append(dataPart)
+
+        y1 = np.array(dataPartArray)
+        # print(y1.shape())
+        y = np.random.random((16, 16))
+        # print(y.shape())
+        x = np.linspace(0, 60, 60)
+
+        extent = [x[0]-(x[1]-x[0])/2., x[-1]+(x[1]-x[0])/2., 0, 1]
 
         ax.cla()
-        im = ax.imshow(y[np.newaxis,:], cmap="inferno", aspect="auto", extent=extent)        
-        ax.set_title("frame {}".format(i))
+        im = ax.imshow(y1, cmap="nipy_spectral",
+                       aspect="auto", extent=extent)
+        # ax.set_title("frame {}".format(i))
         if(state == 'takeImage'):
 
-            global ID              
+            global ID
 
             path = './Data/images/training/' + label + '/' + str(ID) + '.jpeg'
-            plt.savefig(path, format = "jpeg", bbox_inches = 'tight', pad_inches = 0 )
+            plt.savefig(path, format="jpeg", bbox_inches='tight', pad_inches=0)
             state = 'nothing'
 
         elif(state == 'predict'):
 
             buffer_ = BytesIO()
-            plt.savefig(buffer_, format = "jpeg", bbox_inches = 'tight', pad_inches = 0 )
+            plt.savefig(buffer_, format="jpeg",
+                        bbox_inches='tight', pad_inches=0)
             buffer_.seek(0)
             b = BytesIO()
 
@@ -129,5 +158,17 @@ def animate(i):
         return im
 
 
-anim = animation.FuncAnimation(fig, animate, interval = 1)
+def read_from_port(ser):
+    while True:
+        ser.READ()
+
+
+thread = threading.Thread(target=read_from_port, args=(SERIAL,))
+thread.start()
+
+anim = animation.FuncAnimation(fig, animate, interval=1)
 plt.show()
+
+thread.join()
+print('AND GONE')
+# plt.close()
