@@ -6,6 +6,7 @@
 
 import time
 import zmq
+import random
 
 context = zmq.Context()
 socket = context.socket(zmq.REP)
@@ -22,6 +23,9 @@ while True:
     #  whatever work you want python to do, maybe a machine learning task?
     time.sleep(1)
 
+    val = random.randint(0,1)
+    val = str(val)
+
     #  Send reply back to client
     #  In the real world usage, after you finish your work, send your output here
-    socket.send(b"World")
+    socket.send_string(val)

@@ -10,6 +10,9 @@ using UnityEngine;
 /// </summary>
 public class HelloRequester : RunAbleThread
 {
+
+    public Magic box;
+
     /// <summary>
     ///     Request Hello message to server and receive message back. Do it 10 times.
     ///     Stop requesting when Running=false.
@@ -39,6 +42,11 @@ public class HelloRequester : RunAbleThread
                 }
 
                 if (gotMessage) Debug.Log("Received " + message);
+
+                if (gotMessage)
+                {
+                    box.State = message;
+                }
             }
         }
 
