@@ -84,8 +84,8 @@ def Predict(img_path):
 # same as Predict but with image instead of path
 
 
-def PredictFrame(frame):    
-    print("nn")
+def PredictFrame(frame):
+    # print("nn")
     img = ImageConverter.convertFrame(frame)
     Features = FEATUREMODEL.predict(img)
     RESULT = MODEL.predict(Features)

@@ -8,7 +8,7 @@ class SERIAL2PLOT:
 
     def start(self):
         PLOTTER = Plotter.HARRY_PLOTTER(
-            'frequency', 'COM3', 115200, 160, '999')
+            'frequency', '/dev/cu.usbmodem14401', 115200, 160, '999')
         # Start Plotting Loop
         PLOTTER.render()
         # On End
