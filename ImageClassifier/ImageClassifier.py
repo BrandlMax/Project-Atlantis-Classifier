@@ -4,6 +4,8 @@ import numpy as np
 from ImageClassifier.neuralnetwork import nn
 from PIL import Image
 from random import randint
+from PIL import ImageOps
+import PIL
 
 
 # Classifier
@@ -49,7 +51,16 @@ class IMAGECLASSIFIER:
         print("Accuracy: ", acc)
 
     def predictFrame(self, frame):
-        print("Predicting")
+        # CROP FRAME
+        # left, up, right, bottom
+        border = (0, 0, 0, 30)
+
+        # CROP
+        frame = ImageOps.crop(frame, border)       
+
+        # RESIZE IMAGE
+        frame = frame.resize((224, 224), PIL.Image.BICUBIC)
+
         pre = nn.PredictFrame(frame)
         print("Prediction: " + str(pre))
 

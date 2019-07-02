@@ -7,6 +7,7 @@ import PIL
 from io import BytesIO
 from Serial2Plot.MFramework import CSV
 from matplotlib.widgets import Button
+from PIL import ImageOps
 
 # SERIAL DATA
 Port = "COM3"
@@ -81,34 +82,37 @@ def animate(i):
         im = ax.imshow(y[np.newaxis,:], cmap="inferno", aspect="auto", extent=extent)
         
         if(state == 'takeImage'):
-            global ID                        
+
+            global ID              
+
             path = './Data/images/training/' + label + '/' + str(ID) + '.jpeg'
             plt.savefig(path, format = "jpeg", bbox_inches = 'tight', pad_inches = 0 )
             state = 'nothing'
+
         elif(state == 'predict'):
+
             buffer_ = BytesIO()
-            # path = './RTData/img.jpg'
             plt.savefig(buffer_, format = "jpeg", bbox_inches = 'tight', pad_inches = 0 )
             buffer_.seek(0)
-            # image = PIL.Image.open( buffer_ )
-            # img = PIL.Image.frombytes('RGB', (224, 224), buffer_, 'raw')
-
             b = BytesIO()
 
+            # OPEN AS IMAGE
             image = PIL.Image.open(buffer_)
-            image = image.resize((224, 224), PIL.Image.BICUBIC)
+
+            # SET BORDER THAT GETS CROPPED
+            # left, up, right, bottom
+            border = (0, 0, 0, 30)
+
+            # CROP
+            image = ImageOps.crop(image, border)
+
+            # SAVE IMAGE
             image.save(b, format='jpeg')
 
             buffer_.close()
 
+            # PREDICT
             IC.predictFrame(image)
-
-        # try:
-        #     IC.predictFrame(image)
-        # except Exception as e:
-        #     print(e)
-        #     r = 'error'
-        #     pass
 
         plt.pause(0.001)
         return im
@@ -116,20 +120,3 @@ def animate(i):
 
 anim = animation.FuncAnimation(fig, animate, interval = 1)
 plt.show()
-
-# def main():    
-#     while(0 < 1):
-#         print("1: Add noFinger\n2: Add oneFinger\n3: Train\n4:Predict")
-#         inp = input('-->')
-#         if(inp == 1){
-#             CSV.LUKE_CSVWRITER(BufferLength)
-#             for i in range(0, 20):
-#                 CSV.writeFreq(
-#                     'Session_' + str(1) + '.csv'
-#                 )
-#         }
-
-# IC.trainModel()
-# IC.validateModel()
-
-# IC.predictFrame(animate())
