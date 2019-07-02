@@ -56,8 +56,20 @@ def addTwoFinger(e):
 def start(e):
     global state
     IC.trainModel()
-    IC.validateModel()
+    # IC.validateModel()
     state = 'predict'
+
+
+def translate(value, leftMin, leftMax, rightMin, rightMax):
+    # Figure out how 'wide' each range is
+    leftSpan = leftMax - leftMin
+    rightSpan = rightMax - rightMin
+
+    # Convert the left range into a 0-1 range (float)
+    valueScaled = float(value - leftMin) / float(leftSpan)
+
+    # Convert the 0-1 range into a value in the right range.
+    return rightMin + (valueScaled * rightSpan)
 
 
 # GUI
@@ -101,10 +113,21 @@ def animate(i):
 
         dataPartArray = []
 
-        while(len(dataPartArray) < 50):
-            dataPart = SERIAL.doneBUFFER.copy()
+        while(len(dataPartArray) < 100):
+            rawData = SERIAL.doneBUFFER.copy()
+            dataPart = []
+            # Filter
+            maxborder = 400
+            for i, d in enumerate(rawData):
+                if(d < maxborder):
+                    dataPart.append(0)
+                else:
+                    val = translate(d, maxborder, 700, 0, 100)
+                    dataPart.append(val)
+
             dataPart = dataPart[60:]
             dataPart = dataPart[:40]
+
             dataPartArray.append(dataPart)
 
         y1 = np.array(dataPartArray)
