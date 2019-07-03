@@ -16,7 +16,7 @@ start_time = time.time()
 
 # SERIAL DATA
 # Port = "COM3"
-Port = '/dev/cu.usbmodem14401'
+Port = '/dev/cu.usbmodem14201'
 Baud = 115200
 BufferLength = 160
 Divider = "999"
@@ -117,7 +117,7 @@ def animate(i):
             rawData = SERIAL.doneBUFFER.copy()
             dataPart = []
             # Filter
-            maxborder = 400
+            maxborder = 350
             for i, d in enumerate(rawData):
                 if(d < maxborder):
                     dataPart.append(0)
