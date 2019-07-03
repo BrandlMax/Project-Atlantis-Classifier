@@ -6,8 +6,7 @@ public class Magic : MonoBehaviour
 {
 
     public string State = "20";
-
-    public GameObject jump;
+    public string TState = "20";
 
     // Start is called before the first frame update
     void Start()
@@ -18,14 +17,19 @@ public class Magic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(State == "0")
+        if(TState == "0")
         {
-            this.transform.position = Vector3.Lerp(this.transform.position, jump.transform.position, 1);
+            Debug.Log("0");
         }
-        if(State == "1")
+        if(TState == "1")
         {
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - 10, this.transform.position.z);
-            State = "20";
+            // this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - 10, this.transform.position.z);
+            Debug.Log("1");
+        }
+        if (TState == "2")
+        {
+            // this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - 10, this.transform.position.z);
+            Debug.Log("2");
         }
     }
 }

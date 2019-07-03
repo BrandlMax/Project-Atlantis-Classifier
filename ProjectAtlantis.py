@@ -200,11 +200,31 @@ def read_from_port(socket, ser, state, res):
         ser.READ()
 
 
+def comUnity(socket, ser, state, res):
+    while True:
+        message = socket.recv()
+        # print("Received request: %s" % message)
+        time.sleep(1)
+        val = random.randint(0, 1)
+        val = str(val)
+        socket.send_string(res[0])
+
+
 thread = threading.Thread(target=read_from_port,
                           args=(socket, SERIAL, state, RESP))
-thread.start()
+thread.daemon = True
 
+threadUnity = threading.Thread(target=comUnity,
+                               args=(socket, SERIAL, state, RESP))
+threadUnity.daemon = True
+
+thread.start()
+threadUnity.start()
 anim = animation.FuncAnimation(fig, animate, interval=1)
 plt.show()
-
-thread.join()
+print('Bye')
+# plt.close()
+# print("CLOSE")
+# thread.interrupt_main()
+# threadUnity.interrupt_main()
+# print("CLOSED")

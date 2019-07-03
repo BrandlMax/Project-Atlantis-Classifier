@@ -56,15 +56,20 @@ class IMAGECLASSIFIER:
         border = (70, 0, 0, 70)
 
         # CROP
-        frame = ImageOps.crop(frame, border)       
+        frame = ImageOps.crop(frame, border)
 
         # RESIZE IMAGE
         frame = frame.resize((224, 224), PIL.Image.BICUBIC)
 
         pre = nn.PredictFrame(frame)
-        print("Prediction: " + str(pre))
 
-    def Train(self):        
+        labelIndex = np.where(pre[0] == 1.0)
+        predictionResult = self.possibleLabels[labelIndex[0][0]]
+        # print("Prediction: " + str(predictionResult))
+        print("Prediction: " + str(pre))
+        return predictionResult
+
+    def Train(self):
         # LOAD ALL TRAININGSDATA
         self.Get_Datasets(self.trainingPath, self.validationPath)
 
