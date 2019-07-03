@@ -65,8 +65,8 @@ class IMAGECLASSIFIER:
 
         labelIndex = np.where(pre[0] == 1.0)
         predictionResult = self.possibleLabels[labelIndex[0][0]]
-        # print("Prediction: " + str(predictionResult))
-        print("Prediction: " + str(pre))
+        print("Prediction: " + str(predictionResult))
+        # print("Prediction: " + str(pre))
         return predictionResult
 
     def Train(self):

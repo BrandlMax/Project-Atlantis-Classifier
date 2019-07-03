@@ -58,7 +58,7 @@ def addOneFinger(e):
 def addTwoFinger(e):
     global TwoFingerID
     TwoFingerID += 1
-    saveImage('TwoFinger', TwoFingerID)
+    saveImage('HandDown', TwoFingerID)
 
 
 def start(e):
@@ -91,7 +91,7 @@ endButton = Button(axEnd, 'One Finger')
 endButton.on_clicked(addOneFinger)
 
 axT = plt.axes([0.44, 0.01, 0.2, 0.05])
-tButton = Button(axT, 'Two Fingers')
+tButton = Button(axT, 'Hand Down')
 tButton.on_clicked(addTwoFinger)
 
 axF = plt.axes([0.66, 0.01, 0.2, 0.05])
@@ -123,7 +123,7 @@ def animate(i):
             rawData = SERIAL.doneBUFFER.copy()
             dataPart = []
             # Filter
-            maxborder = 350
+            maxborder = 250
             for i, d in enumerate(rawData):
                 if(d < maxborder):
                     dataPart.append(0)
